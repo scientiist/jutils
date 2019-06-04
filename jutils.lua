@@ -7,8 +7,6 @@
 	and more.
 
 	https://love2d.org/wiki/General_math
-  
-	\
 
 ----------------
 module reference:
@@ -16,37 +14,47 @@ module reference:
 	jutils
 
 		math
-			lerp()
-			multiple()
-			round()
-			sign()
-			clamp()
+			number lerp(number start, number end, number alpha)
+			number multiple(number n, number size)
+			number round(number n, number decimalplaces)
+			number sign(number n)
+			number clamp(number low, number n, number high)
 		table
-			copy()
-			construct()
-			iterateAs2D()
+			table copy(table t)
+			table construct(var struct, number size) -- fills a table to index "size" with the "struct"
+			iterateAs2D(table t, number width, number height)
 		string
-			explode(string input, string divider)
+			table explode(string input, string divider)
 		
 	-- datatypes below
 
 		color
-			new()
-			fromRGB()
-			fromHSL()
-			fromHex()
-
+			new(number red, number green, number blue, number alpha = 1)
+			fromRGB(number red, number green, number blue, number alpha = 1)
+			fromHSL(number hue, number saturation, number light, number alpha = 1)
+			fromHex(string hexcode, number alpha = 1)
 
 		line
-			new()
-			lerp()
-			intersects()
-			getIntersectPoint()
+			construction:
+				line new(point pointA, point pointB)
+
+			operations:
+				line == line
+
+			methods:
+				line lerp(line start, line goal, number alpha)
+				boolean, number, number intersects(line lineA, line lineB)
 
 		point
-			new()
-			lerp()
-			distance()
+			construction:
+				point new(number x, number y)
+				
+			operations:
+				point == point
+
+			methods:
+				point lerp(point start, point goal, number alpha)
+				number distance(point p1, point p2)
 
 		rect
 			new()
@@ -280,7 +288,7 @@ do
 	end
 
 	function jutils.math.clamp(low, n, high)
-		return math.max()
+		return math.min(math.max(low, n), high)
 	end
 end
 
