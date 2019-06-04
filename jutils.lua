@@ -29,15 +29,24 @@ module reference:
 	-- datatypes below
 
 		color
-			new(number red, number green, number blue, number alpha = 1)
-			fromRGB(number red, number green, number blue, number alpha = 1)
-			fromHSL(number hue, number saturation, number light, number alpha = 1)
-			fromHex(string hexcode, number alpha = 1)
+			construction:
+				new(number red, number green, number blue, number alpha = 1)
+				fromRGB(number red, number green, number blue, number alpha = 1)
+				fromHSL(number hue, number saturation, number light, number alpha = 1)
+				fromHex(string hexcode, number alpha = 1)
+			fields:
+				number r
+				number g
+				number b
+				number a
 
 		line
 			construction:
 				line new(point pointA, point pointB)
-
+			fields:
+				point pointA
+				point pointB
+			
 			operations:
 				line == line
 
@@ -49,6 +58,9 @@ module reference:
 			construction:
 				point new(number x, number y)
 				
+			fields:
+				number x
+				number y
 			operations:
 				point == point
 
