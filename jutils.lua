@@ -90,7 +90,7 @@ do
 		return color.new(r, g, b, (a or 255)/255)
 	end
 
-	function Color:fromHex(hex, a)
+	function color. fromHex(hex, a)
 		local hex = hex:gsub("#","")
 
 		local r, g, b
@@ -150,7 +150,7 @@ do
 end
 jutils.point = point
 
--- Line datatype
+-- Line segment datatype
 local line = {}
 do
 	line.__index = line
@@ -183,40 +183,58 @@ do
 		return line.new(pointA, pointB)
 	end
 
-	function line.intersects(lineA, lineB)
-		print("Warning: This may error!")
-		-- https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-		-- uses Cramer's Rule to solve the line segment equation
+	function line.slope(line)
+		-- y2-y1 / x2-x1
+		local y = line.pointB.y - line.pointA.y
+		local x = line.pointB.x - line.pointA.x
+		return (y/x)
+	end
 
-		-- good luck debugging this pile of crackhead diahhroea
+	local function lineIntersect(p0, p1, p2, p3)
 
-		-- our original line segments
-		local l1p1, l1p2 = lineA.pointA, lineA.pointB
+		-- stolen from Coding Math: Episode 33
 
-		local l2p1, l2p2 = lineB.pointA, lineB.pointB
+		local A1 = p1.y - p0.y
+		local B1 = p0.x - p1.x
+		local C1 = A1 * p0.x + B1 * p0.y
+		local A2 = p3.y - p2.y
+		local B2 = p2.x - p3.y
+		local C2 = A2 * p2.x + B2 * p2.y
 
-		-- segment 1
-		local s1x = l1p2.x - l1p1.x
-		local s1y = l1p2.y - l1p1.y
+		local denominator = A1 * B2 - A2 * B1
 
-		-- segment 2
-		local s2x = l2p2.x - l2p1.x
-		local s2y = l2p2.y - l2p1.y
-
-		-- what the fuck????
-		local s = (-s1y * (l1p1.x - l2p1.x) + s1x * (l1p1.y - l2p2.y)) / (-s2x * s1y + s1x * s2y)
-		local t = (s2x * (l1p1.y - l2p2.y) - s2y * (l1p1.x - l2p2.x)) / (-s2x * s1y + s1x * s2y)
-
-		-- the actual intersection check
-		if (s >= 0 and s <= 1 and t >= 0 and t <= 1) then
-
-			local ix = l1p1.x + (t * s1x)
-			local iy = l1p1.y + (t * s1y)
-		
-
-			return true, ix, iy
+		if (denominator == 0) then -- parallel and/or colinear lines
+			return false
 		end
+
+		local x = (B2 * C1 - B1 * C2) / denominator
+		local y = (A1 * C2 - A2 * C1) / denominator
+
+
+		local rx0 = (x - p0.x) / (p1.x - p0.x)
+		local ry0 = (y - p0.y) / (p1.y - p0.y)
+
+		local rx1 = (x - p2.x) / (p3.x - p2.x)
+		local ry1 = (y - p2.y) / (p3.y - p2.y)
+
+		if ((rx0 >= 0 and rx0 <= 0) or (ry0 >= 0 and ry0 <= 1)) and  ((rx1 >= 0 and rx1 <= 0) or (ry1 >= 0 and ry1 <= 1)) then
+
+			return true, x, y
+		end
+
 		return false
+	end
+
+	function line.intersects(lineA, lineB)
+		local p0 = lineA.pointA
+		local p1 = lineA.pointB
+
+		local p2 = lineB.pointA
+		local p3 = lineB.pointB
+
+
+		return lineIntersect(p0, p1, p2, p3)
+
 	end
 end
 jutils.line = line
